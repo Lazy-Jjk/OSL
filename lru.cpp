@@ -65,3 +65,67 @@ int main() {
 
     return 0;
 }
+
+
+
+
+
+include <stdio.h>
+#define MAX_FRAMES 3
+#define MAX_PAGES 10
+
+void lru(int pages[], int n) {
+    int frames[MAX_FRAMES] = {-1, -1, -1};
+    int page_faults = 0;
+    printf("LRU Page Replacement Algorithm:\n");
+
+    for (int i = 0; i < n; i++) {
+        int page = pages[i];
+        int page_found = 0;
+        int lru_index = 0;
+        int last_used[MAX_FRAMES] = {-1, -1, -1};
+        for (int j = 0; j < MAX_FRAMES; j++) {
+            if (frames[j] == page) {
+                page_found = 1;
+                break;
+            }
+        }
+        if (!page_found) {
+            for (int j = 0; j < MAX_FRAMES; j++) {
+                last_used[j] = -1;
+                for (int k = i - 1; k >= 0; k--) {
+                    if (pages[k] == frames[j]) {
+                        last_used[j] = k;
+                        break;
+                    }
+                }
+                if (last_used[j] == -1) {
+                    lru_index = j;
+                    break;
+                } 
+                
+            }
+            frames[lru_index] = page;  
+            page_faults++;
+        }
+        printf("Pages: ");
+        for (int j = 0; j < MAX_FRAMES; j++) {
+            if (frames[j] != -1) {
+			    printf("%d ", frames[j]);
+            }
+        }
+        printf("\n");
+    }
+    printf("Total Page Faults: %d\n", page_faults);
+}
+int main() {
+	int i,n;
+	printf("No.of references : ");
+	scanf("%d",&n);
+	int pages[MAX_PAGES];
+	printf("Enter pages : ");
+	for(i=0;i<n;i++) {
+		scanf("%d",&pages[i]);
+	}
+	lru(pages,n);
+}
